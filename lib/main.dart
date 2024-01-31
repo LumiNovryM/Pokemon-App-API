@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,9 +33,24 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-        body: Center(
-      child: Text("Pokemon App"),
-    ));
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Row(
+            children: [
+              Image.asset(
+                'images/pokemon.png',
+                width: 80,
+              ),
+              const Spacer(),
+              const Icon(
+                Icons.menu,
+                color: Colors.black,
+                size: 30.0,
+              ),
+            ],
+          ),
+        ),
+        body: const Center());
   }
 }
