@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:dio/dio.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,6 +29,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Dio dio = Dio();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,5 +99,22 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ));
+  }
+
+  void fetchData() async {
+    try {
+      // Make a GET request to a sample API
+      Response response = await dio.get('https://pokeapi.co/api/v2/pokemon');
+
+      // Print the response data
+      // ignore: avoid_print
+      print('Response Data: ${response.data}');
+
+      // You can now handle the response data as needed
+    } catch (error) {
+      // Handle error
+      // ignore: avoid_print
+      print('Error: $error');
+    }
   }
 }
