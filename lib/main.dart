@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dio/dio.dart';
 
+# Add Main Function
+
 void main() {
   runApp(const MyApp());
 }
@@ -42,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xFFececec),
+          foregroundColor: const Color(0xFFececec),
           title: Row(
             children: [
               Image.asset(
