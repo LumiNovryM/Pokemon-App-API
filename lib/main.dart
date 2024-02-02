@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dio/dio.dart';
 
-// Get Api
-
 void main() {
   runApp(const MyApp());
 }
@@ -11,7 +9,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  // Widget Root
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,12 +29,28 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Dio dio = Dio();
-
+  late List<dynamic> jsonList;
   @override
   void initState() {
     super.initState();
-    fetchData();
+    getData();
+  }
+
+  void getData() async {
+    try {
+      var response = await Dio().get('https://pokeapi.co/api/v2/pokemon');
+      if (response.statusCode == 200) {
+        setState(() {
+          jsonList = response.data['results'] as List;
+        });
+      } else {
+        // ignore: avoid_print
+        print(response.statusCode);
+      }
+    } catch (e) {
+      // ignore: avoid_print
+      print(e);
+    }
   }
 
   @override
@@ -84,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 // horizontal, this produces 2 rows.
                 crossAxisCount: 2,
                 // Generate 100 widgets that display their index in the List.
-                children: List.generate(10, (index) {
+                children: List.generate(jsonList.length, (int index) {
                   return Container(
                     padding: const EdgeInsets.all(10.0),
                     margin: const EdgeInsets.all(5.0),
@@ -92,32 +106,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       borderRadius: BorderRadius.circular(15.0),
                       color: const Color(0xFF2fcea7),
                     ),
-                    child: Text(
-                      'Item ${index + 1}',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
+                    child: Text(jsonList[index]['name']),
                   );
                 }),
               ))
             ],
           ),
         ));
-  }
-
-  void fetchData() async {
-    try {
-      // Make a GET request to a sample API
-      Response response = await dio.get('https://pokeapi.co/api/v2/pokemon');
-
-      // Print the response data
-      // ignore: avoid_print
-      print('Response Data: ${response.data}');
-
-      // You can now handle the response data as needed
-    } catch (error) {
-      // Handle error
-      // ignore: avoid_print
-      print('Error: $error');
-    }
   }
 }
