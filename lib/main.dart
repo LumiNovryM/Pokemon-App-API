@@ -29,28 +29,56 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late List<dynamic> jsonList;
+  // Pokemon Data
+  late List<dynamic> pokeList;
+  late List<dynamic> typeList;
+
+  // Execute API Req
   @override
   void initState() {
     super.initState();
     getData();
   }
 
-  void getData() async {
+  getType(String name) async {
     try {
-      var response = await Dio().get('https://pokeapi.co/api/v2/pokemon');
-      if (response.statusCode == 200) {
+      var responseType =
+          await Dio().get('https://pokeapi.co/api/v2/type/$name/');
+      if (responseType.statusCode == 200) {
         setState(() {
-          jsonList = response.data['results'] as List;
+          pokeList = responseType.data['results'] as List;
         });
-      } else {
-        // ignore: avoid_print
-        print(response.statusCode);
       }
     } catch (e) {
       // ignore: avoid_print
       print(e);
     }
+  }
+
+  // API Handler
+  void getData() async {
+    try {
+      var responsePoke = await Dio().get('https://pokeapi.co/api/v2/pokemon');
+      if (responsePoke.statusCode == 200) {
+        setState(() {
+          pokeList = responsePoke.data['results'] as List;
+        });
+      } else {
+        // ignore: avoid_print
+        print(responsePoke.statusCode);
+      }
+    } catch (e) {
+      // ignore: avoid_print
+      print(e);
+    }
+  }
+
+  // Make First Letter Of Text Capitalize
+  String capitalizeFirstLetter(String text) {
+    if (text.isEmpty) {
+      return text;
+    }
+    return text[0].toUpperCase() + text.substring(1);
   }
 
   @override
@@ -94,20 +122,37 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Expanded(
                   child: GridView.count(
-                // Create a grid with 2 columns. If you change the scrollDirection to
-                // horizontal, this produces 2 rows.
                 crossAxisCount: 2,
                 // Generate 100 widgets that display their index in the List.
-                children: List.generate(jsonList.length, (int index) {
+                children: List.generate(pokeList.length, (int index) {
                   return Container(
-                    padding: const EdgeInsets.all(10.0),
-                    margin: const EdgeInsets.all(5.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      color: const Color(0xFF2fcea7),
-                    ),
-                    child: Text(jsonList[index]['name']),
-                  );
+                      padding: const EdgeInsets.all(10.0),
+                      margin: const EdgeInsets.all(5.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15.0),
+                        color: const Color(0xFF2fcea7),
+                      ),
+                      child: GestureDetector(
+                        onTap: () => {},
+                        child: Column(
+                          children: [
+                            Text(
+                              capitalizeFirstLetter(pokeList[index]['name']),
+                              style: GoogleFonts.inter(
+                                  fontSize: 14.0, fontWeight: FontWeight.w600),
+                            ),
+                            const SizedBox(
+                              height: 20.0,
+                            ),
+                            Image.network(
+                              'https://img.pokemondb.net/sprites/sword-shield/icon/${pokeList[index]['name']}.png',
+                              fit: BoxFit.cover,
+                              height: MediaQuery.of(context).size.height * 0.18,
+                              filterQuality: FilterQuality.none,
+                            )
+                          ],
+                        ),
+                      ));
                 }),
               ))
             ],
